@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/card_screen.dart';
 import 'package:flutter_application_2/connector.dart';
+import 'package:flutter_application_2/side_menu.dart';
 import 'package:provider/provider.dart';
 import 'card_tile.dart';
 
@@ -24,10 +25,10 @@ class MyApp extends StatelessWidget {
             appBarTheme: const AppBarTheme(
                 backgroundColor: Colors.purple,
                 titleTextStyle: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                     fontSize: 23),
-                    iconTheme: IconThemeData(color: Colors.white)
-                    ),
+                iconTheme: IconThemeData(color: Colors.white)),
             textTheme: const TextTheme(
                 bodySmall: TextStyle(
                   color: Colors.black,
@@ -46,7 +47,8 @@ class MyApp extends StatelessWidget {
           ),
           routes: {
             '/': (context) => const CardsScreen(),
-            '/card_screen': (context) => CardScreen(),
+            '/card_screen': (context) => const CardScreen(),
+            '/add_card': (context) => const CardScreen()
           },
         ));
   }
@@ -60,37 +62,57 @@ class CardsScreen extends StatefulWidget {
 }
 
 class _CardsScreenState extends State<CardsScreen> {
-  _CardsScreenState();
+  bool _isFloatingButtonShow = false;
   @override
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final connector = Provider.of<Connector>(context);
+    final cards =
+        connector.map.entries.map((iterator) => iterator.value).toList();
     if (!connector.connected) {
       return const Scaffold(
           body: Center(
         child: CircularProgressIndicator(),
       ));
     } else {
-      final cards = connector.cards;
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('ACS'),
-        ),
-        body: Center(
-            child: ListView.separated(
-                itemCount: 10,
-                separatorBuilder: (context, index) => const Divider(),
-                itemBuilder: (context, i) {
-                  if (i < cards.length) {
-                    
-                    return CardTile(card: cards[i]);
-                  }
-                })),
-      );
+            drawer: const SideMenu(),
+            //add card button.
+            floatingActionButton: Stack(children: [
+              AnimatedPositioned(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  bottom: _isFloatingButtonShow ? 20 : -80,
+                  right: 20,
+                  child: FloatingActionButton(
+                      onPressed: () {
+                      },
+                      child: const Icon(Icons.add))),
+            ]),
+            appBar: AppBar(
+              title: const Text('ACS'),
+              actions: [IconButton(onPressed: (){}, icon: const Icon(Icons.sort))],
+            ),
+            body: GestureDetector(onTap: () {
+            setState(() {
+              _isFloatingButtonShow = !_isFloatingButtonShow;
+            });
+          },child: Center(
+                child: ListView.separated(
+                    itemCount: 10,
+                    separatorBuilder: (context, index) => const Divider(),
+                    itemBuilder: (context, i) {
+                      if (i < cards.length) {
+                        return CardTile(card: cards[i]);
+                      }
+                    })),
+      ));
     }
   }
 }
+

@@ -1,5 +1,6 @@
 // import 'dart:async';
 
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
@@ -14,12 +15,13 @@ class Connector with ChangeNotifier {
     connect();
   }
   late Connection connection;
-  late List<ArchCard> cards;
+  HashMap<int, ArchCard> map = HashMap();
 
   bool _connected = false;
   bool get connected => _connected;
 
   void connect() async {
+    try{
     connection =
         await Future<Connection>.delayed(const Duration(seconds: 4), () {
       return Connection.open(
@@ -37,21 +39,24 @@ class Connector with ChangeNotifier {
       print("connected");
       _connected = true;
       var cardsRawData =
-          await Future<Result>.delayed(const Duration(seconds: 3), () {
+          await Future<Result>.delayed(const Duration(seconds: 1), () {
         print("get cards");
         return connection.execute("SELECT * FROM \"card_legacy\";");
       });
-      cards = parseCardRawData(cardsRawData);
+      map = parseCardRawData(cardsRawData);
       notifyListeners();
+    }
+    }
+    on SocketException catch (exc){
+      print('ERROR : socket exception');
     }
   }
 
-  List<ArchCard> parseCardRawData(Result cardsRawData) {
-    late List<ArchCard> result = [];
+  HashMap<int, ArchCard> parseCardRawData(Result cardsRawData) {
+    var result = HashMap<int, ArchCard>();
     var records = cardsRawData.asMap();
     for (int i = 0; i < records.length; ++i) {
       if (records.containsKey(i)) {
-        var am = records[i]?.cast();
         var currentRecord = records[i]?.asMap();
         if (currentRecord != null) {
           // if (currentRecord.length != CardColumns.ColumnsAmount.index) {
@@ -65,7 +70,7 @@ class Connector with ChangeNotifier {
           print(id);
           String name = currentRecord[CardColumns.Name.index].toString();
           print(name);
-          String usage = currentRecord[CardColumns.Usage.index].toString();
+          String usage = currentRecord[CardColumns.UsageNames.index].toString();
           String placement =
               currentRecord[CardColumns.Placement.index].toString();
           String period = currentRecord[CardColumns.Period.index].toString();
@@ -75,8 +80,9 @@ class Connector with ChangeNotifier {
           String author = currentRecord[CardColumns.Author.index].toString();
           String dataSource =
               currentRecord[CardColumns.DataSource.index].toString();
-          Uint8List resources = base64Decode(
-              currentRecord[CardColumns.Resources.index].toString());
+          // Uint8List resources = base64Decode(
+          Uint8List resources = Uint8List(0);
+          //     currentRecord[CardColumns.Resources.index].toString());
           String creationDate =
               currentRecord[CardColumns.CreationDate.index].toString();
           String excavationYear =
@@ -102,11 +108,45 @@ class Connector with ChangeNotifier {
               creationDate,
               excavationYear,
               excavationDate);
-          result.add(newCard);
+          result.putIfAbsent(id, () => newCard);
           // }
         }
       }
     }
     return result;
   }
+
+  Future<bool> editCard(ArchCard card) async{
+    var oldCard = map[card.id];
+    if (oldCard == null) return false;
+    // if (oldCard.isEqual(card)) return false;
+    String query = editQueryStatement(card);
+    var res = await connection.execute(query);
+    print(res);
+    return true;
+  }
+
+
+String editQueryStatement(ArchCard card){
+  String id = 'id';
+  String name = 'name';
+  String usage = 'usage_names';
+  String placement = 'placement';
+  String period = 'period';
+  String history = 'history';
+  String appearance = 'appearance';
+  String author = 'author';
+  String dataSource = 'data_source';
+  String resources = 'resources';
+  String creationDate = 'creation_date';
+
+  String res = '''UPDATE card_legacy SET
+    $name = \'${card.name}\',$usage = \'${card.usageNames}\',$placement = \'${card.placement}\',$period = \'${card.period}\',
+    $history = \'${card.history}\',$appearance = \'${card.appearance}\',$author = \'${card.author}\',
+    $dataSource = \'${card.dataSource}\',$creationDate = \'${card.creationDate}\' WHERE id = \'${card.id}\';''';
+    print(res);                           //$resources = \'${card.resources}\'
+  return res;
+} 
+
 }
+

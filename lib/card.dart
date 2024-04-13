@@ -5,12 +5,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
-
-
 enum CardColumns {
   Id,
   Name,
-  Usage,
+  UsageNames,
   Placement,
   Period,
   History,
@@ -27,7 +25,7 @@ enum CardColumns {
 class ArchCard {
   int id;
   String name;
-  String usage;
+  String usageNames;
   String placement;
   String period;
   String history;
@@ -42,7 +40,7 @@ class ArchCard {
   ArchCard(
     this.id,
     this.name,
-    this.usage,
+    this.usageNames,
     this.placement,
     this.period,
     this.history,
@@ -55,6 +53,57 @@ class ArchCard {
     this.excavationDate,
   );
 
+  void setData(CardColumns column, Object data) {
+    switch (column) {
+      case CardColumns.Name:
+        name = data.toString();
+        break;
+      case CardColumns.UsageNames:
+        usageNames = data.toString();
+        break;
+      case CardColumns.Placement:
+        placement = data.toString();
+        break;
+      case CardColumns.Period:
+        period = data.toString();
+        break;
+      case CardColumns.History:
+        history = data.toString();
+        break;
+      case CardColumns.Appearance:
+        appearance = data.toString();
+        break;
+      case CardColumns.Author:
+        author = data.toString();
+        break;
+      case CardColumns.DataSource:
+        dataSource = data.toString();
+        break;
+      case CardColumns.Resources:
+        break;
+      // this.resources = data.toString();
+      case CardColumns.CreationDate:
+        creationDate = data.toString();
+        break;
+      default:
+        return;
+    }
+  }
+
+//TODO: REWRITE THIS ON CUSTOM METHOD
+
+  bool isEqual(ArchCard other) {
+    return other.name == name &&
+        other.usageNames == usageNames &&
+        other.placement == placement &&
+        other.period == period &&
+        other.history == history &&
+        other.appearance == appearance &&
+        other.author == author &&
+        other.dataSource == dataSource &&
+        other.resources == resources &&
+        other.creationDate == creationDate;
+  }
   //FOR FUTURE CARDS
 
   // int id;

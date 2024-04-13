@@ -11,13 +11,14 @@ class CardTile extends StatelessWidget {
     var icon = Image.memory(card.resources);
 
     return ListTile(
-      
-      title: Text(card.name, style: theme.textTheme.bodyMedium),
-      subtitle: Text(card.placement.toString(), style: theme.textTheme.labelSmall),
-      trailing: const Icon(Icons.arrow_forward),
-      onTap: () {
-        Navigator.of(context).pushNamed('/card_screen',arguments: card);
-      },
-    );
+        title: Text(card.name, style: theme.textTheme.bodyMedium),
+        subtitle:
+            Text(card.placement.toString(), style: theme.textTheme.labelSmall),
+        trailing: IconButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed('/card_screen', arguments: card);
+          },
+          icon: const Icon(Icons.arrow_forward),
+        ));
   }
 }

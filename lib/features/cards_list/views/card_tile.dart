@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/card_screen.dart';
-import 'card.dart';
+import 'package:flutter_application_2/features/card_screen/card_screen.dart';
+import '../models/card.dart';
 
 class CardTile extends StatelessWidget {
   final ArchCard card;

@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/card_screen.dart';
-import 'package:flutter_application_2/connector.dart';
-import 'package:flutter_application_2/side_menu.dart';
+import 'package:flutter_application_2/features/card_screen/card_screen.dart';
+import 'package:flutter_application_2/features/sql_connection/connector.dart';
+import 'package:flutter_application_2/features/side_menu/side_menu.dart';
 import 'package:provider/provider.dart';
-import 'card_tile.dart';
+import 'features/cards_list/views/card_tile.dart';
 
 void main() {
   runApp(const MyApp());

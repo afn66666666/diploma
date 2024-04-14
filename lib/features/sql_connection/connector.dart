@@ -6,7 +6,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter_application_2/card.dart';
+import 'package:flutter_application_2/features/cards_list/models/card.dart';
 import 'package:postgres/postgres.dart';
 import 'package:flutter/material.dart';
 

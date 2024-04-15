@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/features/card_screen/defs.dart';
 import 'package:flutter_application_2/features/cards_list/models/card.dart';
 
-const double flangPadding = 10;
-const double frontPadding = 5;
+
 
 class CardFormsRead extends StatelessWidget {
   final ArchCard _archCard;
@@ -15,8 +14,8 @@ class CardFormsRead extends StatelessWidget {
     return ListView(
       children: [
         Padding(
-            padding: EdgeInsets.only(
-                left: MediaQuery.of(context).padding.left),
+            padding: const EdgeInsets.fromLTRB(
+                flangPadding, frontPadding, frontPadding, frontPadding),
             child: Text(labels[CardColumns.Name.index])),
         Padding(
             padding: const EdgeInsets.fromLTRB(

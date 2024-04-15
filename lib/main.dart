@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/features/card_addition/card_add_screen.dart';
 import 'package:flutter_application_2/features/card_screen/card_screen.dart';
 import 'package:flutter_application_2/features/sql_connection/connector.dart';
 import 'package:flutter_application_2/features/side_menu/side_menu.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
           routes: {
             '/': (context) => const CardsScreen(),
             '/card_screen': (context) => const CardScreen(),
-            '/add_card': (context) => const CardScreen()
+            '/add_card': (context) => const CardAddScreen()
           },
         ));
   }
@@ -91,6 +92,7 @@ class _CardsScreenState extends State<CardsScreen> {
                   right: 20,
                   child: FloatingActionButton(
                       onPressed: () {
+                        Navigator.of(context).pushNamed('/add_card');
                       },
                       child: const Icon(Icons.add))),
             ]),

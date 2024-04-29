@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/features/card_screen/widgets/card_forms_edit.dart';
 import 'package:flutter_application_2/features/card_screen/widgets/card_forms_read.dart';
-import 'package:flutter_application_2/features/cards_list/models/card.dart';
+import 'package:flutter_application_2/features/card/card.dart';
 import 'package:flutter_application_2/features/sql_connection/connector.dart';
 import 'package:provider/provider.dart';
 

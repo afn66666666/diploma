@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/features/authorization/authorization_screen.dart';
 import 'package:flutter_application_2/features/card_addition/card_add_screen.dart';
 import 'package:flutter_application_2/features/card_screen/card_screen.dart';
 import 'package:flutter_application_2/features/sql_connection/connector.dart';
@@ -47,9 +48,10 @@ class MyApp extends StatelessWidget {
                     fontSize: 14)),
           ),
           routes: {
-            '/': (context) => const CardsScreen(),
+            '/': (context)=> AuthorizationScreen(),
+            // '/': (context) => const CardsScreen(),
             '/card_screen': (context) => const CardScreen(),
-            '/add_card': (context) => const CardAddScreen()
+            '/add_card': (context) => CardAddScreen()
           },
         ));
   }

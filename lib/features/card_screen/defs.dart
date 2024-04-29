@@ -1,3 +1,20 @@
+enum CardColumns {
+  Id,
+  Name,
+  UsageNames,
+  Placement,
+  Period,
+  History,
+  Appearance,
+  Author,
+  DataSource,
+  Resources,
+  CreationDate,
+  ExcavationYear,
+  ExcavationDate,
+  ColumnsAmount
+}
+
 const List<String> labels = [
   ('Номер карточки'),
   'Наименование объекта',
@@ -14,6 +31,24 @@ const List<String> labels = [
   'Дата раскопок'
 ];
 
-
+const String tableName = 'card_legacy';
+const bool isStartLoadingEnabled = true;
+const bool isAuthorizationEnabled = true;
 const double flangPadding = 10;
 const double frontPadding = 5;
+
+const List<String> columnNames = [
+// column names
+  'id',
+  'name',
+  'usage_names',
+  'placement',
+  'period',
+  'history',
+  'appearance',
+  'author',
+  'data_source',
+  'resources',
+  'creation_date',
+];
+

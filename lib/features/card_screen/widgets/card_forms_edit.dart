@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/features/card_screen/defs.dart';
-import 'package:flutter_application_2/features/cards_list/models/card.dart';
+import 'package:flutter_application_2/features/card/card.dart';
 
 
 class CardFormsEdit extends StatefulWidget {

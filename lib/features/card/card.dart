@@ -4,26 +4,12 @@ import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/features/card_screen/defs.dart';
 
-enum CardColumns {
-  Id,
-  Name,
-  UsageNames,
-  Placement,
-  Period,
-  History,
-  Appearance,
-  Author,
-  DataSource,
-  Resources,
-  CreationDate,
-  ExcavationYear,
-  ExcavationDate,
-  ColumnsAmount
-}
+
 
 class ArchCard {
-  int id;
+  int? id;
   String name;
   String usageNames;
   String placement;
@@ -34,8 +20,8 @@ class ArchCard {
   String dataSource;
   Uint8List resources;
   String creationDate;
-  String excavationYear;
-  String excavationDate;
+  String? excavationYear;
+  String? excavationDate;
 
   ArchCard(
     this.id,

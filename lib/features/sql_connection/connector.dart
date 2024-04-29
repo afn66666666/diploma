@@ -6,7 +6,8 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter_application_2/features/cards_list/models/card.dart';
+import 'package:flutter_application_2/features/card/card.dart';
+import 'package:flutter_application_2/features/card_screen/defs.dart';
 import 'package:postgres/postgres.dart';
 import 'package:flutter/material.dart';
 
@@ -21,34 +22,34 @@ class Connector with ChangeNotifier {
   bool get connected => _connected;
 
   void connect() async {
-    try{
-    connection =
-        await Future<Connection>.delayed(const Duration(seconds: 4), () {
-      return Connection.open(
-        Endpoint(
-          host: 'pg3.sweb.ru',
-          database: 'avkuzbkru',
-          username: 'avkuzbkru',
-          password: 'Klizma000',
-        ),
-        settings: const ConnectionSettings(sslMode: SslMode.disable),
-      );
-    });
-
-    if (connection.isOpen) {
-      print("connected");
-      _connected = true;
-      var cardsRawData =
-          await Future<Result>.delayed(const Duration(seconds: 1), () {
-        print("get cards");
-        return connection.execute("SELECT * FROM \"card_legacy\";");
+    try {
+      connection =
+          await Future<Connection>.delayed(const Duration(seconds: 2), () {
+        return Connection.open(
+          Endpoint(
+            host: 'pg3.sweb.ru',
+            database: 'avkuzbkru',
+            username: 'avkuzbkru',
+            password: 'Klizma000',
+          ),
+          settings: const ConnectionSettings(sslMode: SslMode.disable),
+        );
       });
-      map = parseCardRawData(cardsRawData);
-      notifyListeners();
-    }
-    }
-    on SocketException catch (exc){
+
+      if (connection.isOpen) {
+        print("connected");
+        _connected = true;
+        var cardsRawData =
+            await Future<Result>.delayed(const Duration(seconds: 1), () {
+          print("get cards");
+          return connection.execute("SELECT * FROM \"card_legacy\";");
+        });
+        map = parseCardRawData(cardsRawData);
+        notifyListeners();
+      }
+    } on SocketException catch (exc) {
       print('ERROR : socket exception');
+      print(exc.message);
     }
   }
 
@@ -116,37 +117,69 @@ class Connector with ChangeNotifier {
     return result;
   }
 
-  Future<bool> editCard(ArchCard card) async{
+  Future<bool> editCard(ArchCard card) async {
+    try{
     var oldCard = map[card.id];
     if (oldCard == null) return false;
     // if (oldCard.isEqual(card)) return false;
     String query = editQueryStatement(card);
     var res = await connection.execute(query);
-    print(res);
+    }
+    on Exception catch(e){
+      print('ERROR : socket exception');
+    }
     return true;
   }
 
+  Future<bool> insertCard(ArchCard card) async{
+    try{
+    var statement = insertQueryStatement(card);
+    var res = await connection.execute((statement));
+    }
+    on Exception catch(e){
+      print('ERROR : exception');
+      print(e.toString());
+    }
+    return true;
+  }
 
-String editQueryStatement(ArchCard card){
-  String id = 'id';
-  String name = 'name';
-  String usage = 'usage_names';
-  String placement = 'placement';
-  String period = 'period';
-  String history = 'history';
-  String appearance = 'appearance';
-  String author = 'author';
-  String dataSource = 'data_source';
-  String resources = 'resources';
-  String creationDate = 'creation_date';
+  String editQueryStatement(ArchCard card) {
+    String res = '''UPDATE $tableName SET
+    ${columnNames[CardColumns.Name.index]} = \'${card.name}\',
+    ${columnNames[CardColumns.UsageNames.index]} = \'${card.usageNames}\',
+    ${columnNames[CardColumns.Placement.index]} = \'${card.placement}\',
+    ${columnNames[CardColumns.Period.index]} = \'${card.period}\',
+    ${columnNames[CardColumns.History.index]} = \'${card.history}\',
+    ${columnNames[CardColumns.Appearance.index]} = \'${card.appearance}\',
+    ${columnNames[CardColumns.Author.index]} = \'${card.author}\',
+    ${columnNames[CardColumns.DataSource.index]} = \'${card.dataSource}\',
+    ${columnNames[CardColumns.CreationDate.index]} = \'${card.creationDate}\' WHERE id = \'${card.id}\';''';
+    print(res); //$resources = \'${card.resources}\'
+    return res;
+  }
 
-  String res = '''UPDATE card_legacy SET
-    $name = \'${card.name}\',$usage = \'${card.usageNames}\',$placement = \'${card.placement}\',$period = \'${card.period}\',
-    $history = \'${card.history}\',$appearance = \'${card.appearance}\',$author = \'${card.author}\',
-    $dataSource = \'${card.dataSource}\',$creationDate = \'${card.creationDate}\' WHERE id = \'${card.id}\';''';
-    print(res);                           //$resources = \'${card.resources}\'
-  return res;
-} 
-
+  String insertQueryStatement(ArchCard card) {
+    String res = '''INSERT INTO ${tableName} (
+      ${columnNames[CardColumns.Name.index]},
+    ${columnNames[CardColumns.UsageNames.index]},
+    ${columnNames[CardColumns.Placement.index]},
+    ${columnNames[CardColumns.Period.index]},
+    ${columnNames[CardColumns.History.index]},
+    ${columnNames[CardColumns.Appearance.index]},
+    ${columnNames[CardColumns.Author.index]},
+    ${columnNames[CardColumns.DataSource.index]},
+    ${columnNames[CardColumns.CreationDate.index]}) VALUES (
+      '${card.name}',
+      '${card.usageNames}',
+      '${card.placement}',
+      '${card.period}',
+      '${card.history}',
+      '${card.appearance}',
+      '${card.author}',
+      '${card.dataSource}',
+      '${card.creationDate}'
+    );''';
+    print(res);
+    return res;
+  }
 }
-

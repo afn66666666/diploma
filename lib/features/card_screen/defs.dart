@@ -31,7 +31,8 @@ const List<String> labels = [
   'Дата раскопок'
 ];
 
-const String tableName = 'card_legacy';
+const String cardTableName = 'card_legacy';
+const String userTableName = 'users';
 const bool isStartLoadingEnabled = true;
 const bool isAuthorizationEnabled = true;
 const double flangPadding = 10;

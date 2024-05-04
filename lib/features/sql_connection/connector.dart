@@ -143,8 +143,16 @@ class Connector with ChangeNotifier {
     return true;
   }
 
+ //TODO: разбирайся с notifyListeners!! Почему authorize дважды коллится?!
+  Future<bool> authorize(String login, String password) async {
+    final statement = "SELECT * FROM $userTableName WHERE login = '$login';";
+    final result = await Future.delayed(const Duration(seconds: 3),()=>connection.execute(statement));
+    notifyListeners();
+    return result.isNotEmpty;
+  }
+
   String editQueryStatement(ArchCard card) {
-    String res = '''UPDATE $tableName SET
+    String res = '''UPDATE $cardTableName SET
     ${columnNames[CardColumns.Name.index]} = \'${card.name}\',
     ${columnNames[CardColumns.UsageNames.index]} = \'${card.usageNames}\',
     ${columnNames[CardColumns.Placement.index]} = \'${card.placement}\',
@@ -159,7 +167,7 @@ class Connector with ChangeNotifier {
   }
 
   String insertQueryStatement(ArchCard card) {
-    String res = '''INSERT INTO ${tableName} (
+    String res = '''INSERT INTO ${cardTableName} (
       ${columnNames[CardColumns.Name.index]},
     ${columnNames[CardColumns.UsageNames.index]},
     ${columnNames[CardColumns.Placement.index]},

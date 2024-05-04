@@ -73,7 +73,7 @@ class _CardsScreenState extends State<CardsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    print('cards screen build');
     final connector = Provider.of<Connector>(context);
     final cards =
         connector.map.entries.map((iterator) => iterator.value).toList();

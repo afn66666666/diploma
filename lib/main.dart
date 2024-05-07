@@ -3,11 +3,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/features/authorization/authorization_screen.dart';
+import 'package:flutter_application_2/features/card/card.dart';
 import 'package:flutter_application_2/features/card_addition/card_add_screen.dart';
 import 'package:flutter_application_2/features/card_screen/card_screen.dart';
 import 'package:flutter_application_2/features/sql_connection/connector.dart';
 import 'package:flutter_application_2/features/side_menu/side_menu.dart';
 import 'package:provider/provider.dart';
+import 'features/card_screen/defs.dart';
 import 'features/cards_list/views/card_tile.dart';
 
 void main() {
@@ -48,8 +50,11 @@ class MyApp extends StatelessWidget {
                     fontSize: 14)),
           ),
           routes: {
-            '/': (context)=> AuthorizationScreen(),
-            // '/': (context) => const CardsScreen(),
+            '/': (context) {
+              return isAuthorizationEnabled
+                  ? AuthorizationScreen()
+                  : const CardsScreen();
+            },
             '/card_screen': (context) => const CardScreen(),
             '/add_card': (context) => CardAddScreen()
           },
@@ -65,10 +70,29 @@ class CardsScreen extends StatefulWidget {
 }
 
 class _CardsScreenState extends State<CardsScreen> {
-  bool _isFloatingButtonShow = false;
+  final Set<int> _ii = {};
+  bool isFloatingButtonShow = false;
+  bool isEditMode = false;
+  bool _isBusy = false;
   @override
   void initState() {
     super.initState();
+  }
+
+  void changeSelection(int index, bool value) {
+    if (!isEditMode) {
+      setState(() {
+        isEditMode = true;
+      });
+    }
+    if (value) {
+      _ii.add(index);
+    } else {
+      if (_ii.contains(index)) {
+        _ii.remove(index);
+      }
+    }
+    print(_ii);
   }
 
   @override
@@ -83,40 +107,86 @@ class _CardsScreenState extends State<CardsScreen> {
         child: CircularProgressIndicator(),
       ));
     } else {
-      return Scaffold(
-            drawer: const SideMenu(),
-            //add card button.
-            floatingActionButton: Stack(children: [
-              AnimatedPositioned(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  bottom: _isFloatingButtonShow ? 20 : -80,
-                  right: 20,
-                  child: FloatingActionButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/add_card');
-                      },
-                      child: const Icon(Icons.add))),
-            ]),
-            appBar: AppBar(
-              title: const Text('ACS'),
-              actions: [IconButton(onPressed: (){}, icon: const Icon(Icons.sort))],
-            ),
-            body: GestureDetector(onTap: () {
-            setState(() {
-              _isFloatingButtonShow = !_isFloatingButtonShow;
-            });
-          },child: Center(
+      return GestureDetector(
+          onTap: () {
+            if (!isEditMode) {
+              setState(() {
+                isFloatingButtonShow = !isFloatingButtonShow;
+              });
+            }
+          },
+          child: Scaffold(
+              drawer: isEditMode ? const SideMenu() : null,
+              //add card button.
+              floatingActionButton: Stack(children: [
+                AnimatedPositioned(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    bottom: isFloatingButtonShow ? 20 : -80,
+                    right: 20,
+                    child: FloatingActionButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/add_card');
+                        },
+                        child: const Icon(Icons.add))),
+              ]),
+              appBar: AppBar(
+                leading: isEditMode
+                    ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isEditMode = false;
+                          });
+                        },
+                        icon: const Icon(Icons.cancel),
+                      )
+                    : null,
+                title: isEditMode ? null : const Text('ACS'),
+                actions: isEditMode
+                    ? [
+                        IconButton(
+                            onPressed: () {
+                              Set<ArchCard> cardsToRemove = {};
+                              for (var elem in _ii) {
+                                cardsToRemove.add(cards[elem]);
+                              }
+                              connector.removeCards(cardsToRemove);
+                              setState(() {
+                                isEditMode = false;
+                              });
+                            },
+                            icon: const Icon(Icons.delete_outline))
+                      ]
+                    : [
+                        IconButton(
+                            onPressed: () {}, icon: const Icon(Icons.sort))
+                      ],
+              ),
+              body: Center(
                 child: ListView.separated(
                     itemCount: 10,
                     separatorBuilder: (context, index) => const Divider(),
-                    itemBuilder: (context, i) {
-                      if (i < cards.length) {
-                        return CardTile(card: cards[i]);
+                    itemBuilder: (context, index) {
+                      if (index < cards.length) {
+                        return GestureDetector(
+                            child: CardTile(
+                                index: index,
+                                isEditMode: isEditMode,
+                                card: cards[index],
+                                callback: changeSelection));
+                        // child: CardTile(
+                        //   card: cards[index],
+                        //   editMode: _isEditMode,
+                        // ));
                       }
-                    })),
-      ));
+                    }),
+              )));
     }
   }
 }
 
+//TODO: удаление
+// личный кабинет
+// медиа 
+// окошки ошибок
+// поиск и фильтрация

@@ -105,7 +105,7 @@ class AuthorizationScreenState extends State<AuthorizationScreen> {
                           var test = connector.authorize(login, hash);
                           test.then((res) {
                             if (res) {
-                              Navigator.of(context).pushNamed('/add_card');
+                              Navigator.of(context).pushNamed('/card_screen');
                             } else {
                               setState(
                                 () {

@@ -34,7 +34,7 @@ const List<String> labels = [
 const String cardTableName = 'card_legacy';
 const String userTableName = 'users';
 const bool isStartLoadingEnabled = true;
-const bool isAuthorizationEnabled = true;
+const bool isAuthorizationEnabled = false;
 const double flangPadding = 10;
 const double frontPadding = 5;
 

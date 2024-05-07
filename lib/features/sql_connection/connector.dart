@@ -132,15 +132,17 @@ class Connector with ChangeNotifier {
   }
 
   Future<bool> insertCard(ArchCard card) async{
+    Result res;
     try{
-    var statement = insertQueryStatement(card);
-    var res = await connection.execute((statement));
+      var statement = insertQueryStatement(card);
+      res = await connection.execute((statement));
+      return res.isEmpty;
     }
     on Exception catch(e){
       print('ERROR : exception');
       print(e.toString());
     }
-    return true;
+    return false;
   }
 
  //TODO: разбирайся с notifyListeners!! Почему authorize дважды коллится?!
@@ -189,5 +191,25 @@ class Connector with ChangeNotifier {
     );''';
     print(res);
     return res;
+  }
+
+  Future<bool> removeCards (Set<ArchCard> cards) async {
+    try{
+      for(int i = 0;i < cards.length;++i){
+        var id = cards.elementAt(i).id;
+        var statement = '''DELETE FROM $cardTableName WHERE id = $id''';
+        var res = await connection.execute((statement));
+        print(res);
+        if(res.isNotEmpty){
+          return false;
+        }
+      }
+      return true;
+    }
+    on Exception catch(e){
+      print('ERROR : exception');
+      print(e.toString());
+    }
+    return true;
   }
 }

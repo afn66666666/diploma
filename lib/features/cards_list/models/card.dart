@@ -4,7 +4,7 @@ import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/features/card_screen/defs.dart';
+import 'package:flutter_application_2/features/defs.dart';
 
 
 

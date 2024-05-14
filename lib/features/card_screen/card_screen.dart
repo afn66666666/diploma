@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/features/card_screen/widgets/card_forms_edit.dart';
 import 'package:flutter_application_2/features/card_screen/widgets/card_forms_read.dart';
-import 'package:flutter_application_2/features/card/card.dart';
+import 'package:flutter_application_2/features/cards_list/models/card.dart';
+import 'package:flutter_application_2/features/defs.dart';
 import 'package:flutter_application_2/features/sql_connection/connector.dart';
 import 'package:provider/provider.dart';
 
@@ -19,13 +20,13 @@ class CardScreen extends StatefulWidget {
 class _CardScreenState extends State<CardScreen> {
   late ArchCard _archCard;
 
-  int _editFABPosition = 20;
-  bool _isEditingMode = false;
-  bool _isEditButtonHide = true;
-  bool _hideAnimationBlocked = false;
-
+  int editFABPosition = 20;
+  bool isEditingMode = false;
+  bool isEditButtonHide = true;
+  bool hideAnimationBlocked = false;
+  bool queryResult = false;
   void setEditButtonVisibility(bool mode) {
-    _editFABPosition = mode ? 40 : -80;
+    editFABPosition = mode ? 40 : -80;
   }
 
   @override
@@ -50,39 +51,81 @@ class _CardScreenState extends State<CardScreen> {
     final formsRead = CardFormsRead(_archCard);
     return GestureDetector(
         onTap: () {
-          setState(() {
-            if (!_hideAnimationBlocked && !_isEditingMode) {
-              _hideAnimationBlocked = true;
+          if (!hideAnimationBlocked && !isEditingMode) {
+            setState(() {
+              hideAnimationBlocked = true;
               Timer(const Duration(milliseconds: 300),
-                  () => _hideAnimationBlocked = false);
-              _isEditButtonHide = !_isEditButtonHide;
-              setEditButtonVisibility(_isEditButtonHide);
-            }
-          });
+                  () => hideAnimationBlocked = false);
+              isEditButtonHide = !isEditButtonHide;
+              setEditButtonVisibility(isEditButtonHide);
+            });
+          }
         },
         child: Scaffold(
           appBar: AppBar(
-              title: _isEditingMode
+              title: isEditingMode
                   ? Text('${_archCard.name} : Редактирование ')
                   : Text('${_archCard.name} : Сводка'),
-              actions: _isEditingMode
+              actions: isEditingMode
                   ? [
                       //CLOSE BUTTON
                       IconButton(
                         onPressed: () {
                           setState(() {
-                            _isEditingMode = false;
+                            isEditingMode = false;
                           });
                         },
                         icon: const Icon(Icons.close),
                       ),
-                      // accept editions
+                      // ACCEPT BUTTON
                       IconButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const AlertDialog(
+                                  title: Text('Сохранение'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CircularProgressIndicator(),
+                                      SizedBox(height: 16.0),
+                                      Text('Подождите')
+                                    ],
+                                  ),
+                                );
+                              });
+
+                          queryResult = await connector.editCard(_archCard);
+                          Navigator.of(context).pop();
+                          // ignore: use_build_context_synchronously
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('Сохранение'),
+                                  content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: queryResult?[
+                                        Icon(Icons.check_circle,
+                                            color: Colors.green, size: 60),
+                                        SizedBox(height: 16.0),
+                                        Text('Подождите')
+                                      ]
+                                      : [
+                                          Icon(
+                                            Icons.error,
+                                            color: Colors.red,
+                                            size: 60,
+                                          )
+                                        ],
+                                      ),
+                                );
+                              });
+
                           setState(() {
                             formsEdit.updateCard();
-                            var res = connector.editCard(_archCard);
-                            _isEditingMode = false;
+                            isEditingMode = false;
                           });
                         },
                         icon: const Icon(Icons.check_sharp),
@@ -94,19 +137,19 @@ class _CardScreenState extends State<CardScreen> {
             AnimatedPositioned(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                bottom: _editFABPosition.toDouble(),
+                bottom: editFABPosition.toDouble(),
                 right: 20,
                 child: FloatingActionButton(
                     onPressed: () {
                       setState(() {
-                        _editFABPosition = -80;
-                        _isEditingMode = !_isEditingMode;
+                        editFABPosition = -80;
+                        isEditingMode = !isEditingMode;
                         setEditButtonVisibility(false);
                       });
                     },
                     child: const Icon(Icons.edit))),
           ]),
-          body: _isEditingMode ? formsEdit : formsRead,
+          body: isEditingMode ? formsEdit : formsRead,
         ));
   }
 }

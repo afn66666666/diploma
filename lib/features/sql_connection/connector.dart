@@ -2,29 +2,30 @@
 
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter_application_2/features/card/card.dart';
-import 'package:flutter_application_2/features/card_screen/defs.dart';
+import 'package:flutter_application_2/features/cards_list/models/card.dart';
+import 'package:flutter_application_2/features/defs.dart';
 import 'package:postgres/postgres.dart';
 import 'package:flutter/material.dart';
 
 class Connector with ChangeNotifier {
   Connector() {
+    log('Connector was created');
     connect();
   }
   late Connection connection;
-  HashMap<int, ArchCard> map = HashMap();
+  HashMap<int, ArchCard> cardsMap = HashMap();
 
-  bool _connected = false;
-  bool get connected => _connected;
+  bool connected = false;
 
   void connect() async {
     try {
       connection =
-          await Future<Connection>.delayed(const Duration(seconds: 2), () {
+          await Future<Connection>.delayed(defaultDbSimulationDelay, () {
         return Connection.open(
           Endpoint(
             host: 'pg3.sweb.ru',
@@ -38,13 +39,13 @@ class Connector with ChangeNotifier {
 
       if (connection.isOpen) {
         print("connected");
-        _connected = true;
+        connected = true;
         var cardsRawData =
-            await Future<Result>.delayed(const Duration(seconds: 1), () {
+            await Future<Result>.delayed(defaultDbSimulationDelay, () {
           print("get cards");
           return connection.execute("SELECT * FROM \"card_legacy\";");
         });
-        map = parseCardRawData(cardsRawData);
+        cardsMap = parseCardRawData(cardsRawData);
         notifyListeners();
       }
     } on SocketException catch (exc) {
@@ -118,37 +119,48 @@ class Connector with ChangeNotifier {
   }
 
   Future<bool> editCard(ArchCard card) async {
-    try{
-    var oldCard = map[card.id];
-    if (oldCard == null) return false;
-    // if (oldCard.isEqual(card)) return false;
-    String query = editQueryStatement(card);
-    var res = await connection.execute(query);
+    try {
+      if (isDatabaseTouched) {
+        var oldCard = cardsMap[card.id];
+        if (oldCard == null) return false;
+        // if (oldCard.isEqual(card)) return false;
+        String query = editQueryStatement(card);
+        var res = await connection.execute(query);
+        return res.isEmpty;
+      } else {
+        return Future.delayed(defaultDbSimulationDelay, () => true);
+      }
+    } on Exception catch (e) {
+      log('CARD EDIT ERROR : error ${card.id}');
+      log(e.toString());
+      return false;
     }
-    on Exception catch(e){
-      print('ERROR : socket exception');
-    }
-    return true;
   }
 
-  Future<bool> insertCard(ArchCard card) async{
+  Future<bool> insertCard(ArchCard card) async {
     Result res;
-    try{
-      var statement = insertQueryStatement(card);
-      res = await connection.execute((statement));
-      return res.isEmpty;
+    try {
+      if (isDatabaseTouched) {
+        var statement = insertQueryStatement(card);
+        res = await Future.delayed(defaultDbSimulationDelay, () {
+          return connection.execute(statement);
+        });
+        return res.isEmpty;
+      } else {
+        return Future.delayed(defaultDbSimulationDelay, () => true);
+      }
+    } on Exception catch (e) {
+      log('CARD INSERT ERROR : error ${card.id}');
+      log(e.toString());
+      return false;
     }
-    on Exception catch(e){
-      print('ERROR : exception');
-      print(e.toString());
-    }
-    return false;
   }
 
- //TODO: разбирайся с notifyListeners!! Почему authorize дважды коллится?!
+  //TODO: разбирайся с notifyListeners!! Почему authorize дважды коллится?!
   Future<bool> authorize(String login, String password) async {
     final statement = "SELECT * FROM $userTableName WHERE login = '$login';";
-    final result = await Future.delayed(const Duration(seconds: 3),()=>connection.execute(statement));
+    final result = await Future.delayed(
+        defaultDbSimulationDelay, () => connection.execute(statement));
     notifyListeners();
     return result.isNotEmpty;
   }
@@ -193,22 +205,30 @@ class Connector with ChangeNotifier {
     return res;
   }
 
-  Future<bool> removeCards (Set<ArchCard> cards) async {
-    try{
-      for(int i = 0;i < cards.length;++i){
-        var id = cards.elementAt(i).id;
-        var statement = '''DELETE FROM $cardTableName WHERE id = $id''';
-        var res = await connection.execute((statement));
-        print(res);
-        if(res.isNotEmpty){
-          return false;
+  Future<bool> removeCards(Set<int> ids) async {
+    try {
+      for (var id in ids) {
+        if (cardsMap.containsKey(id)) {
+          if (isDatabaseTouched) {
+            var statement = '''DELETE FROM $cardTableName WHERE id = $id''';
+            var res = await Future.delayed(defaultDbSimulationDelay, () {
+              connection.execute((statement));
+            });
+            if (res.isEmpty) {
+              cardsMap.remove(id);
+            } else {
+              return false;
+            }
+          } else {
+            cardsMap.remove(id);
+          }
+        } else {
+          log('CARD TILE DELETE ERROR : error $id');
         }
       }
-      return true;
-    }
-    on Exception catch(e){
-      print('ERROR : exception');
-      print(e.toString());
+    } on Exception catch (e) {
+      log(e.toString());
+      return false;
     }
     return true;
   }

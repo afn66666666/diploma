@@ -9,17 +9,17 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/features/card_screen/defs.dart';
-import 'package:flutter_application_2/features/card/card.dart';
+import 'package:flutter_application_2/features/defs.dart';
+import 'package:flutter_application_2/features/cards_list/models/card.dart';
 import 'package:flutter_application_2/features/sql_connection/connector.dart';
 import 'package:provider/provider.dart';
 
 class CardAddScreen extends StatelessWidget {
   final List<TextEditingController> _controllers = [];
-  CardAddScreen({super.key}){
-     for(int i =0;i<CardColumns.ColumnsAmount.index;++i){
+  CardAddScreen({super.key}) {
+    for (int i = 0; i < CardColumns.ColumnsAmount.index; ++i) {
       _controllers.add(TextEditingController());
-     }
+    }
   }
 
   @override
@@ -30,10 +30,54 @@ class CardAddScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Создание новой карточки'),
         actions: [
-          IconButton(onPressed: () {
-            var card = createCard();
-            connector.insertCard(card);   
-          }, icon: const Icon(Icons.check_sharp))
+          IconButton(
+              onPressed: () async {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const AlertDialog(
+                        title: Text('Сохранение'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 16.0),
+                            Text('Подождите')
+                          ],
+                        ),
+                      );
+                    });
+                var card = createCard();
+                bool queryResult = await connector.insertCard(card);
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop();
+                // ignore: use_build_context_synchronously
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Сохранение'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: queryResult
+                              ? const [
+                                  Icon(Icons.check_circle,
+                                      color: Colors.green, size: 60),
+                                  SizedBox(height: 16.0),
+                                  Text('Подождите')
+                                ]
+                              : const [
+                                  Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                    size: 60,
+                                  )
+                                ],
+                        ),
+                      );
+                    });
+              },
+              icon: const Icon(Icons.check_sharp))
         ],
       ),
       body: ListView(
@@ -200,17 +244,20 @@ class CardAddScreen extends StatelessWidget {
     );
   }
 
-  ArchCard createCard(){
-    return ArchCard(null,_controllers[CardColumns.Name.index].text,
-     _controllers[CardColumns.UsageNames.index].text,
-     _controllers[CardColumns.Placement.index].text,
-      _controllers[CardColumns.Period.index].text,
-      _controllers[CardColumns.History.index].text,
-      _controllers[CardColumns.Appearance.index].text,
-      _controllers[CardColumns.Author.index].text,
-      _controllers[CardColumns.DataSource.index].text,
-      Uint8List(0),
-      _controllers[CardColumns.CreationDate.index].text,
-      null,null);
+  ArchCard createCard() {
+    return ArchCard(
+        null,
+        _controllers[CardColumns.Name.index].text,
+        _controllers[CardColumns.UsageNames.index].text,
+        _controllers[CardColumns.Placement.index].text,
+        _controllers[CardColumns.Period.index].text,
+        _controllers[CardColumns.History.index].text,
+        _controllers[CardColumns.Appearance.index].text,
+        _controllers[CardColumns.Author.index].text,
+        _controllers[CardColumns.DataSource.index].text,
+        Uint8List(0),
+        _controllers[CardColumns.CreationDate.index].text,
+        null,
+        null);
   }
 }

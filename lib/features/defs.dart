@@ -31,10 +31,13 @@ const List<String> labels = [
   'Дата раскопок'
 ];
 
-const String cardTableName = 'card_legacy';
-const String userTableName = 'users';
+
 const bool isStartLoadingEnabled = true;
 const bool isAuthorizationEnabled = false;
+const bool isDatabaseTouched = false;
+
+const String cardTableName = 'card_legacy';
+const String userTableName = 'users';
 const double flangPadding = 10;
 const double frontPadding = 5;
 
@@ -52,4 +55,4 @@ const List<String> columnNames = [
   'resources',
   'creation_date',
 ];
-
+var defaultDbSimulationDelay = const Duration(seconds: 2);

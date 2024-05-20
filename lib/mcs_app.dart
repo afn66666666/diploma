@@ -8,6 +8,7 @@ import 'package:flutter_application_2/features/card_addition/card_add_screen.dar
 import 'package:flutter_application_2/features/card_screen/card_screen.dart';
 import 'package:flutter_application_2/features/cards_list/views/cards_list.dart';
 import 'package:flutter_application_2/features/defs.dart';
+import 'package:flutter_application_2/features/splash_screen/splash_screen.dart';
 import 'package:flutter_application_2/features/sql_connection/connector.dart';
 import 'package:provider/provider.dart';
 
@@ -42,16 +43,21 @@ class MCSApp extends StatelessWidget {
                 labelSmall: TextStyle(
                     color: Color.fromARGB(255, 53, 52, 52),
                     fontWeight: FontWeight.w700,
-                    fontSize: 14)),
+                    fontSize: 14))
+                    ,
           ),
           routes: {
+            // '/' : (context){
+            //   return SplashScreen();
+            // },
             '/': (context) {
               return isAuthorizationEnabled
                   ? AuthorizationScreen()
                   : const CardsScreen();
             },
             '/card_screen': (context) => const CardScreen(),
-            '/add_card': (context) => CardAddScreen() 
+            '/add_card': (context) => CardAddScreen() ,
+            
           },
         ));
   }

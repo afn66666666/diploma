@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/features/cards_list/views/cards_list.dart';
 import 'package:flutter_application_2/features/sql_connection/connector.dart';
 import 'package:provider/provider.dart';
 import 'package:crypto/crypto.dart';
@@ -16,7 +17,7 @@ class AuthorizationScreen extends StatefulWidget {
 
 class AuthorizationScreenState extends State<AuthorizationScreen> {
   bool _showError = false;
-  bool _isPasswordVisible = false;
+  bool isPasswordHidden = true;
   bool _isLoadingShow = false;
   String _error = '';
   @override
@@ -27,9 +28,9 @@ class AuthorizationScreenState extends State<AuthorizationScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(
+        const Text(
           'Авторизация',
-          style: theme.appBarTheme.titleTextStyle,
+          style: TextStyle(color: Colors.purple),
         ),
         //login
         Padding(
@@ -38,14 +39,6 @@ class AuthorizationScreenState extends State<AuthorizationScreen> {
             controller: widget._loginController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              // enabledBorder: OutlineInputBorder(
-              //     borderSide: BorderSide(
-              //         color: Colors.black54, width: 3, style: BorderStyle.none)),
-              // disabledBorder: OutlineInputBorder(
-              //     borderSide: BorderSide(
-              //         color: Colors.black54, width: 3, style: BorderStyle.none)),
-              // border: OutlineInputBorder(
-              //     borderSide: BorderSide(color: Colors.white, width: 3,style: BorderStyle.none)),
               labelText: 'Логин',
               labelStyle: TextStyle(color: theme.appBarTheme.backgroundColor),
             ),
@@ -56,16 +49,16 @@ class AuthorizationScreenState extends State<AuthorizationScreen> {
         Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: TextFormField(
-              obscureText: _isPasswordVisible,
+              obscureText: isPasswordHidden,
               controller: widget._passwordController,
               decoration: InputDecoration(
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
-                        _isPasswordVisible = !_isPasswordVisible;
+                        isPasswordHidden = !isPasswordHidden;
                       });
                     },
-                    icon: Icon(_isPasswordVisible
+                    icon: Icon(isPasswordHidden
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined),
                     color: theme.appBarTheme.backgroundColor,
@@ -77,63 +70,92 @@ class AuthorizationScreenState extends State<AuthorizationScreen> {
             )),
         Container(
             child: _isLoadingShow
-                ? const CircularProgressIndicator()
+                ? const Padding(
+                    padding: EdgeInsets.all(70),
+                    child: Column(children: [
+                      SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 8,
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Вход в систему...',
+                        style: TextStyle(color: Colors.purple),
+                      )
+                    ]),
+                  )
                 : Column(
                     children: [
                       Padding(
                           padding: const EdgeInsets.only(top: 10, bottom: 10),
                           child: _showError
                               ? Text(
-                                  style: TextStyle(color: Colors.red,fontSize: theme.textTheme.bodySmall?.fontSize ?? 16),
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize:
+                                          theme.textTheme.bodySmall?.fontSize ??
+                                              16),
                                   _error)
                               : null),
-                      TextButton(
-                        onPressed: () async {
-                          final login = widget._loginController.text;
-                          final password = widget._passwordController.text;
-                          if (login.isEmpty || password.isEmpty) {
-                            setState(() {
-                              _showError = true;
-                              _error = 'Поля не могут быть пустыми';
-                            });
-                          }
-                          else{
-                          final hash =
-                              sha512.convert(utf8.encode(password)).toString();
-                          setState(() => _isLoadingShow = true);
-                          _showError = await connector.authorize(login, hash);
-                          var test = connector.authorize(login, hash);
-                          test.then((res) {
-                            if (res) {
-                              Navigator.of(context).pushNamed('/card_screen');
-                            } else {
-                              setState(
-                                () {
-                                  _isLoadingShow = false;
-                                  _showError = true;
-                                  _error = 'Логин или пароль введен неверно';
-                                },
-                              );
-                            }
-                          });
-                          }
-                        },
-                        child: const Text('Войти'),
-                      ),
+                      // TextButton(
+                      //   style: ButtonStyle(backgroundColor: ),
+                      //   onPressed: () async => authorizing(connector),
+                      //   child: const Text('Войти'),
+                      // ),
+                      ElevatedButton(
+                        onPressed: () => authorizing(connector),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purple,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(4.0), // скругление углов
+                          ),
+                        ),
+                        child: Text(
+                          'Войти',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white, // цвет текста
+                          ),
+                        ),
+                      )
                     ],
                   ))
       ]),
-      // Container(
-      //   child: _isLoadingShow
-      //       ? Container(
-      //           margin:
-      //               EdgeInsets.symmetric(horizontal: 90, vertical: 350),
-      //           alignment: Alignment.center,
-      //           color: Colors.amber,
-      //           child: const Text('kmkm'),
-      //         )
-      //       : null,
-      // ),
     );
+  }
+
+  void authorizing(Connector connector) async {
+    final login = widget._loginController.text;
+    final password = widget._passwordController.text;
+    if (login.isEmpty || password.isEmpty) {
+      setState(() {
+        _showError = true;
+        _error = 'Поля не могут быть пустыми';
+      });
+    } else {
+      final hash = sha512.convert(utf8.encode(password)).toString();
+      setState(() => _isLoadingShow = true);
+      var res = await connector.authorize(login, hash);
+      if (res) {
+        // ignore: use_build_context_synchronously
+        Navigator.of(context)
+            .pushReplacement<void, void>(MaterialPageRoute(builder: (context) {
+          return const CardsScreen();
+        }));
+      } else {
+        setState(
+          () {
+            _isLoadingShow = false;
+            _showError = true;
+            _error = 'Логин или пароль введен неверно';
+          },
+        );
+      }
+    }
   }
 }

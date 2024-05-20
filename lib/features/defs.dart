@@ -32,8 +32,8 @@ const List<String> labels = [
 ];
 
 
-const bool isStartLoadingEnabled = true;
-const bool isAuthorizationEnabled = false;
+
+const bool isAuthorizationEnabled = true;
 const bool isDatabaseTouched = false;
 
 const String cardTableName = 'card_legacy';

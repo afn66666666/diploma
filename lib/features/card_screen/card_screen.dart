@@ -103,16 +103,16 @@ class _CardScreenState extends State<CardScreen> {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: Text('Сохранение'),
+                                  title: const Text('Сохранение'),
                                   content: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      children: queryResult?[
+                                      children: queryResult? const [
                                         Icon(Icons.check_circle,
                                             color: Colors.green, size: 60),
                                         SizedBox(height: 16.0),
                                         Text('Подождите')
                                       ]
-                                      : [
+                                      : const [
                                           Icon(
                                             Icons.error,
                                             color: Colors.red,

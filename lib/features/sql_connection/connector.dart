@@ -5,8 +5,10 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:math' hide log;
 import 'dart:typed_data';
 
+import 'package:flutter_application_2/features/account/accountView.dart';
 import 'package:flutter_application_2/features/cards_list/models/card.dart';
 import 'package:flutter_application_2/features/defs.dart';
 import 'package:postgres/postgres.dart';
@@ -19,6 +21,7 @@ class Connector with ChangeNotifier {
   }
   late Connection connection;
   HashMap<int, ArchCard> cardsMap = HashMap();
+  User? user;
 
   bool connected = false;
 
@@ -61,9 +64,6 @@ class Connector with ChangeNotifier {
       if (records.containsKey(i)) {
         var currentRecord = records[i]?.asMap();
         if (currentRecord != null) {
-          // if (currentRecord.length != CardColumns.ColumnsAmount.index) {
-          //   return result;
-          // } else {
           int? id =
               int.tryParse(currentRecord[CardColumns.Id.index].toString());
           if (id == null) {
@@ -145,8 +145,14 @@ class Connector with ChangeNotifier {
         res = await Future.delayed(defaultDbSimulationDelay, () {
           return connection.execute(statement);
         });
+        if (res.isEmpty) {
+          cardsMap[card.id ?? 0] = card;
+        }
         return res.isEmpty;
       } else {
+        var s = Random();
+        cardsMap[card.id ?? s.nextInt(9999)] = card;
+        notifyListeners();
         return Future.delayed(defaultDbSimulationDelay, () => true);
       }
     } on Exception catch (e) {
@@ -161,8 +167,9 @@ class Connector with ChangeNotifier {
     final statement = "SELECT * FROM $userTableName WHERE login = '$login';";
     final result = await Future.delayed(
         defaultDbSimulationDelay, () => connection.execute(statement));
-    notifyListeners();
-    return result.isNotEmpty;
+    // notifyListeners();
+    user = initAccount(result);
+    return user != null;
   }
 
   String editQueryStatement(ArchCard card) {
@@ -231,5 +238,11 @@ class Connector with ChangeNotifier {
       return false;
     }
     return true;
+  }
+
+  initAccount(Result result) {
+    if (result.affectedRows != 0) {
+      var name = result[0][0];
+    }
   }
 }

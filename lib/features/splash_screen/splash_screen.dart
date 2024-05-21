@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen>{
   @override
   Widget build(BuildContext context) {
     final connector = Provider.of<Connector>(context);
-    connector.connect();
+    connector.initConnection();
     
     return Container(color: Colors.purple, child : const CircularProgressIndicator());
   }

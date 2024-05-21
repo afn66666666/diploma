@@ -11,13 +11,14 @@ import 'dart:typed_data';
 import 'package:flutter_application_2/features/account/accountView.dart';
 import 'package:flutter_application_2/features/cards_list/models/card.dart';
 import 'package:flutter_application_2/features/defs.dart';
-import 'package:postgres/postgres.dart';
+import 'package:postgres/postgres.dart' hide Pool;
 import 'package:flutter/material.dart';
+import 'package:postgresql2/postgresql.dart' hide Connection;
 
 class Connector with ChangeNotifier {
   Connector() {
     log('Connector was created');
-    connect();
+    initConnection();
   }
   late Connection connection;
   HashMap<int, ArchCard> cardsMap = HashMap();
@@ -25,7 +26,18 @@ class Connector with ChangeNotifier {
 
   bool connected = false;
 
-  void connect() async {
+  void initConnection() async {
+    var uri = 'postgres://avkuzbkru:Klizma000@pg3.sweb.ru:5432/avkuzbkru';
+    connect(uri).then((value) => log('connected!!'));
+    var test = await Connection.open(
+      Endpoint(
+        host: 'pg3.sweb.ru',
+        database: 'avkuzbkru',
+        username: 'avkuzbkru',
+        password: 'Klizma000',
+      ),
+      settings: const ConnectionSettings(sslMode: SslMode.disable),
+    );
     try {
       connection =
           await Future<Connection>.delayed(defaultDbSimulationDelay, () {

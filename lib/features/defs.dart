@@ -1,37 +1,49 @@
 enum CardColumns {
   Id,
   Name,
-  UsageNames,
-  Placement,
-  Period,
-  History,
-  Appearance,
+  Date,
   Author,
-  DataSource,
-  Resources,
-  CreationDate,
-  ExcavationYear,
+  InfoYear,
+  InfoSource,
+  ReceiveType, //TODO: will be enum
   ExcavationDate,
+  Description,
+  Count,
+  Material, //TODO: will be enum
+  Size,
+  Preservation,
+  StoragePlace, //TODO: will be enum i guess...
+  InfoActNumber,
+  RegistrationNumber,
+  InventoryNumber,
+  Note,
+  Media,
+  Geodata,
   ColumnsAmount
 }
 
 const List<String> labels = [
   ('Номер карточки'),
-  'Наименование объекта',
-  'Обиходные названия*',
-  'Место размещения объекта',
-  'Время возникновения, открытия объекта',
-  'Краткая история объекта',
-  'Внешние признаки (особенности стиля)',
-  'Данные об авторах объекта',
-  'Источники сведений об объекте',
-  'Фотографии или видеоматериалы',
-  'Дата составления карточки',
-  'Год раскопок',
-  'Дата раскопок'
+  'Имя',
+  'Дата создания',
+  'Автор',
+  'Год получения информации',
+  'Источник получения информации',
+  'Вид получения',
+  'Дата раскопок',
+  'Подробное описание',
+  'Количество',
+  'Материалы',
+  'Размер',
+  'Состояние',
+  'Место хранения',
+  'Номер информационного акта',
+  'Номер регистрации',
+  'Инвентарный номер',
+  'Доп. сведения',
+  'Фото',
+  'Место нахождения (раскопок)',
 ];
-
-
 
 const bool isAuthorizationEnabled = true;
 const bool isDatabaseTouched = false;

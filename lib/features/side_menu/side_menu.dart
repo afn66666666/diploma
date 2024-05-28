@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/features/authorization/authorization_screen.dart';
+import 'package:flutter_application_2/features/account/view/accountView.dart';
+import 'package:flutter_application_2/features/authorization/view/authorization_screen.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
@@ -19,7 +20,9 @@ class SideMenu extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.person_rounded),
                     title: const Text('Личный кабинет'),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/account');
+                    },
                   ),
                   ListTile(
                     leading: const Icon(Icons.logout),

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/features/card_screen/widgets/card_forms_edit.dart';
 import 'package:flutter_application_2/features/card_screen/widgets/card_forms_read.dart';
-import 'package:flutter_application_2/features/cards_list/models/card.dart';
+import 'package:flutter_application_2/repositories/cards_list/models/card.dart';
 import 'package:flutter_application_2/features/defs.dart';
 import 'package:flutter_application_2/features/sql_connection/connector.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +46,6 @@ class _CardScreenState extends State<CardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final connector = Provider.of<Connector>(context);
     final formsEdit = CardFormsEdit(_archCard);
     final formsRead = CardFormsRead(_archCard);
     return GestureDetector(
@@ -96,7 +95,7 @@ class _CardScreenState extends State<CardScreen> {
                                 );
                               });
 
-                          queryResult = await connector.editCard(_archCard);
+                          // queryResult = await connector.editCard(_archCard);
                           Navigator.of(context).pop();
                           // ignore: use_build_context_synchronously
                           showDialog(

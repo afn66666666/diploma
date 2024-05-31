@@ -7,12 +7,10 @@ class CardTile extends StatefulWidget {
   final ArchCard card;
   bool isEditMode;
   bool isChecked = false;
-  final Function(int, bool) callback;
   CardTile(
       {super.key,
       required this.card,
-      required this.isEditMode,
-      required this.callback});
+      required this.isEditMode,});
 
   @override
   State<StatefulWidget> createState() => _CardTileState();

@@ -4,14 +4,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ResourcesSlot extends StatefulWidget {
-  ResourcesSlot({super.key});
+class MediaLoader extends StatefulWidget {
+  MediaLoader({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ResourcesSlotState();
+  State<StatefulWidget> createState() => _MediaLoaderState();
 }
 
-class _ResourcesSlotState extends State<ResourcesSlot> {
+class _MediaLoaderState extends State<MediaLoader> {
   @override
   final ImagePicker imgPicker = ImagePicker();
   List<File> _selectedImages = [];

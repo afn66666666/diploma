@@ -1,5 +1,5 @@
 import 'package:flutter_application_2/repositories/user/models/user.dart';
-import 'package:flutter_application_2/repositories/user/user_repository.dart';
+import 'package:flutter_application_2/repositories/authorization/authorize_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'authorization_state.dart';
@@ -11,12 +11,12 @@ class AuthorizationBloc extends Bloc<AuthorizationEvent, AuthorizationState> {
       : super(AuthorizationInitial()) {
     on<Authorize>((event, emit) async {
       try {
-        emit(AuthorizationLoading());
+        emit(LoadingAuthorization());
         final user =
             await authorizationRepository.getUser(event.login, event.password);
-        emit(AuthorizationSuccessful(user: user));
+        emit(SuccessAuthorized(user: user));
       } on Exception catch (e) {
-        emit(AuthorizationFailed(e));
+        emit(FailedAuthorized(e));
       }
     });
   }

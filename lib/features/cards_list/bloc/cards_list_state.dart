@@ -11,6 +11,11 @@ class CardsListLoaded extends CardsListState {
   final List<ArchCard> cards;
 }
 
+class CardsListLoadEnded extends CardsListState{
+  CardsListLoadEnded({required this.cards});
+  final List<ArchCard> cards;
+}
+
 class CardsListLoadingFailed extends CardsListState {
   final Object? exc;
   CardsListLoadingFailed(this.exc);

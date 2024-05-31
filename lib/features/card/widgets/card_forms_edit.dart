@@ -6,6 +6,7 @@ import 'package:flutter_application_2/repositories/cards_list/models/card.dart';
 class CardFormsEdit extends StatefulWidget {
   final ArchCard _archCard;
   final List<TextEditingController> _controllers = [];
+  final Map<String, ValueNotifier> _controllers2 = {};
   CardFormsEdit(this._archCard, {super.key}) {
     // _controllers.add(TextEditingController(text: _archCard.id.toString()));
     // _controllers.add(TextEditingController(text: _archCard.name));

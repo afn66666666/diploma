@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/features/card_screen/widgets/card_forms_edit.dart';
-import 'package:flutter_application_2/features/card_screen/widgets/card_forms_read.dart';
+import 'package:flutter_application_2/features/card/widgets/card_forms_edit.dart';
+import 'package:flutter_application_2/features/card/widgets/card_forms_read.dart';
+import 'package:flutter_application_2/excavation_map/map_screen.dart';
 import 'package:flutter_application_2/repositories/cards_list/models/card.dart';
 import 'package:flutter_application_2/features/defs.dart';
 import 'package:flutter_application_2/features/sql_connection/connector.dart';
@@ -34,11 +36,11 @@ class _CardScreenState extends State<CardScreen> {
     super.didChangeDependencies();
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args == null) {
-      print("args is null");
+      log("args is null");
       return;
     }
     if (args is! ArchCard) {
-      print("need ArchCard argument");
+      log("need ArchCard argument");
       return;
     }
     _archCard = args;
@@ -104,21 +106,22 @@ class _CardScreenState extends State<CardScreen> {
                                 return AlertDialog(
                                   title: const Text('Сохранение'),
                                   content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: queryResult? const [
-                                        Icon(Icons.check_circle,
-                                            color: Colors.green, size: 60),
-                                        SizedBox(height: 16.0),
-                                        Text('Подождите')
-                                      ]
-                                      : const [
-                                          Icon(
-                                            Icons.error,
-                                            color: Colors.red,
-                                            size: 60,
-                                          )
-                                        ],
-                                      ),
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: queryResult
+                                        ? const [
+                                            Icon(Icons.check_circle,
+                                                color: Colors.green, size: 60),
+                                            SizedBox(height: 16.0),
+                                            Text('Подождите')
+                                          ]
+                                        : const [
+                                            Icon(
+                                              Icons.error,
+                                              color: Colors.red,
+                                              size: 60,
+                                            )
+                                          ],
+                                  ),
                                 );
                               });
 
@@ -148,7 +151,10 @@ class _CardScreenState extends State<CardScreen> {
                     },
                     child: const Icon(Icons.edit))),
           ]),
-          body: isEditingMode ? formsEdit : formsRead,
+          body: isEditingMode
+              ? formsEdit
+              : formsRead
+          
         ));
   }
 }

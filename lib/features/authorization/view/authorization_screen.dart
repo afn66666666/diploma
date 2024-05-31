@@ -3,18 +3,14 @@ import 'dart:developer';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/features/authorization/authorizer.dart';
 import 'package:flutter_application_2/features/authorization/bloc/authorization_bloc.dart';
-import 'package:flutter_application_2/features/main_menu/presentation/widgets/cards_list.dart';
-import 'package:flutter_application_2/features/sql_connection/connector.dart';
-import 'package:flutter_application_2/repositories/user/models/user.dart';
+import 'package:flutter_application_2/features/cards_list/view/cards_list.dart';
+import 'package:flutter_application_2/repositories/authorization/authorize_repository.dart';
 import 'package:flutter_application_2/repositories/user/user_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:provider/provider.dart';
 
 class AuthorizationScreen extends StatefulWidget {
-  final authorizer = Authorizer();
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
   AuthorizationScreen({super.key});
@@ -79,8 +75,8 @@ class AuthorizationScreenState extends State<AuthorizationScreen> {
         BlocListener<AuthorizationBloc, AuthorizationState>(
           bloc: _authorizationBloc,
           listener: (context, state) {
-            if (state is AuthorizationSuccessful) {
-
+            if (state is SuccessAuthorized) {
+              GetIt.I.registerSingleton(UserRepository(state.user));
               Navigator.of(context).pushReplacement<void, void>(
                   MaterialPageRoute(builder: (context) {
                 return CardsList();
@@ -121,13 +117,13 @@ class AuthorizationScreenState extends State<AuthorizationScreen> {
                     if (state is AuthorizationInitial) {
                       return authorizeButton;
                     }
-                    if (state is AuthorizationLoading) {
+                    if (state is LoadingAuthorization) {
                       return const CircularProgressIndicator();
                     }
                     // if (state is AuthorizationSuccessful) {
 
                     // }
-                    if (state is AuthorizationFailed) {
+                    if (state is FailedAuthorized) {
                       return Column(children: [
                         const Text(
                           'Неверный логин или пароль',

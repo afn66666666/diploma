@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/features/account/view/accountView.dart';
+import 'package:flutter_application_2/features/account/view/account_View.dart';
 import 'package:flutter_application_2/features/authorization/view/authorization_screen.dart';
 
 class SideMenu extends StatelessWidget {
@@ -25,13 +25,20 @@ class SideMenu extends StatelessWidget {
                     },
                   ),
                   ListTile(
+                    leading: const Icon(Icons.topic),
+                    title: const Text('Заявки на изменения'),
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/requests');
+                    },
+                  ),
+                  ListTile(
                     leading: const Icon(Icons.logout),
                     title: const Text('Выход'),
-                    onTap: (){
-                      Navigator.of(context).pushReplacement<void,void>(
-                                    MaterialPageRoute(builder: (context) {
-                                      return AuthorizationScreen();
-                                    }));
+                    onTap: () {
+                      Navigator.of(context).pushReplacement<void, void>(
+                          MaterialPageRoute(builder: (context) {
+                        return AuthorizationScreen();
+                      }));
                     },
                   ),
                 ],

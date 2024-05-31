@@ -3,8 +3,8 @@ class User {
   final String name;
   final String surname;
   final String login;
-  final String organization;
-  final String role;
+  final String organizationId;
+  final String roleId;
 
   const User(
 
@@ -12,8 +12,8 @@ class User {
       {required this.name,
       required this.surname,
       required this.login,
-      required this.organization,
-      required this.role});
+      required this.organizationId,
+      required this.roleId});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {
@@ -30,8 +30,8 @@ class User {
             name: name,
             surname: surname,
             login: login,
-            organization: organization,
-            role: role),
+            organizationId: organization,
+            roleId: role),
       _ => throw const FormatException('Failed to load album.'),
     };
   }

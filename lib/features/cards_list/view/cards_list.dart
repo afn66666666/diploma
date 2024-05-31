@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/features/cards_list/bloc/cards_list_bloc.dart';
 import 'package:flutter_application_2/repositories/cards_list/models/card.dart';
-import 'package:flutter_application_2/features/cards_list/view/SearchView.dart';
+import 'package:flutter_application_2/features/cards_list/view/search_view.dart';
 import 'package:flutter_application_2/features/cards_list/view/card_tile.dart';
 import 'package:flutter_application_2/features/side_menu/side_menu.dart';
 import 'package:flutter_application_2/repositories/cards_list/cards_list_repository.dart';
@@ -117,6 +117,27 @@ class _CardsListState extends State<CardsList> {
               builder: (context, state) {
                 if (state is CardsListLoaded) {
                   return ListView.separated(
+                      itemCount: state.cards.length + 1,
+                      separatorBuilder: (context, index) => const Divider(),
+                      itemBuilder: (context, index) {
+                        if (index < state.cards.length) {
+                          return GestureDetector(
+                              child: CardTile(
+                                  isEditMode: isEditMode,
+                                  card: state.cards[index],
+                                  ));
+                        } else {
+                          _cardsListBloc.add(LoadCardsList());
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 32),
+                            child: Center(
+                              child: const CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                      });
+                } else if (state is CardsListLoadEnded) {
+                  return ListView.separated(
                       itemCount: state.cards.length,
                       separatorBuilder: (context, index) => const Divider(),
                       itemBuilder: (context, index) {
@@ -125,9 +146,8 @@ class _CardsListState extends State<CardsList> {
                               child: CardTile(
                                   isEditMode: isEditMode,
                                   card: state.cards[index],
-                                  callback: changeSelection));
+                                  ));
                         }
-                        return null;
                       });
                 } else if (state is CardsListLoadingFailed) {
                   return Center(

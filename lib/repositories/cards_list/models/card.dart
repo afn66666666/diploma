@@ -22,7 +22,7 @@ class ArchCard {
   String size;
   String preservation;
   int registrationNumber;
-  String storagePlace; //TODO: will be enum i guess...
+  String storagePlaceId; //TODO: will be enum i guess...
   String inventoryNumber;
   String note;
   Uint8List media;
@@ -44,7 +44,7 @@ class ArchCard {
     this.size,
     this.preservation,
     this.registrationNumber,
-    this.storagePlace,
+    this.storagePlaceId,
     this.inventoryNumber,
     this.note,
     this.media,
@@ -56,7 +56,7 @@ ArchCard.fromJson(Map<String, dynamic> json):
   id = json['id'] as String,
   name = json['name'] as String,
   date = DateTime.parse(json['card_date'] as String),
-  author = json['author'] ?? '',
+  author = json['card_author'],
   infoYear = json['information_year'] as int,
   infoSource = json['information_source'] as String,
   receiveType = json['information_receive_type'],
@@ -68,44 +68,12 @@ ArchCard.fromJson(Map<String, dynamic> json):
   size = json['size'] as String,
   preservation = json['preservation'] as String,
   registrationNumber = int.parse(json['registration_number']),
-  storagePlace = json['storage_place'] as String,
+  storagePlaceId = json['storage_place'] as String,
   inventoryNumber = json['inventory_number'] as String,
   note = json['note'] ??'',
   // media = json['media']??'',
   media = base64Decode(json['media']),
   geodata = json['geodata'] as String;
-
-
-  // factory ArchCard.fromJson(Map<String, dynamic> json) {
-  //   return switch (json) {
-  //     {
-  //       'id': String userId,
-  //       'card_date':  DateTime dateTime,
-  //       'card_author': String author,
-  //       'information_year': int infoYear,
-  //       'information_source': String infoSource,
-  //       'information_receive_type': String receiveType,
-  //       'information_act_number': int infoActNumber,
-  //       'excavation_date': DateTime excavationDate,
-  //       'description': String description,
-  //       'count': int count,
-  //       'material': String materialId,
-  //       'size': String size,
-  //       'preservation': String preservation,
-  //       'registration_number': int registrationNumber,
-  //       'storage_place': String organizationId,
-  //       'inventory_number': int inventoryNumber,
-  //       'media': List<Uint8> media,
-  //       'geodata': String geodata,
-  //     } =>
-  //       ArchCard(
-  //         id: id,
-  //         date: dateTime,
-  //         infoYear: infoYear,
-  //       ),
-  //     _ => throw const FormatException('Failed to load album.'),
-  //   };
-  // }
 
   void setData(CardColumns column, Object data) {
     switch (column) {

@@ -2,8 +2,8 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/features/cards_list/view/SearchView.dart';
-import 'package:flutter_application_2/features/main_menu/presentation/widgets/cards_list.dart';
+import 'package:flutter_application_2/features/cards_list/view/search_view.dart';
+import 'package:flutter_application_2/features/cards_list/view/cards_list.dart';
 import 'package:flutter_application_2/features/side_menu/side_menu.dart';
 
 class MainMenuScreen extends StatefulWidget{

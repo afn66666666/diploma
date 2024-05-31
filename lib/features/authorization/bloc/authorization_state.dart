@@ -5,17 +5,16 @@ class AuthorizationState{}
 
 class AuthorizationInitial extends AuthorizationState {}
 
-class AuthorizationLoading extends AuthorizationState {}
+class LoadingAuthorization extends AuthorizationState {}
 
-class AuthorizationSuccessful extends AuthorizationState {
+class SuccessAuthorized extends AuthorizationState {
   final User user;
 
-  AuthorizationSuccessful({required this.user});
-
+  SuccessAuthorized({required this.user});
 }
 
-class AuthorizationFailed extends AuthorizationState {
+class FailedAuthorized extends AuthorizationState {
   final Object? exc;
-  AuthorizationFailed(this.exc);
+  FailedAuthorized(this.exc);
   
 }

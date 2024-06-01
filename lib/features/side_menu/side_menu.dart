@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/features/account/view/account_View.dart';
+import 'package:flutter_application_2/features/account/view/account_view.dart';
 import 'package:flutter_application_2/features/authorization/view/authorization_screen.dart';
 
 class SideMenu extends StatelessWidget {

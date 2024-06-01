@@ -3,15 +3,15 @@ import 'package:intl/intl.dart';
 
 class DatePicker extends StatefulWidget {
   String label;
-
-DatePicker({required this.label});
+  TextEditingController controller;
+DatePicker({required this.label, required this.controller});
 
   @override
   State<StatefulWidget> createState() => _DatePickerState();
 }
 
 class _DatePickerState extends State<DatePicker> {
-  var _date = TextEditingController();
+  bool _wrongData = true;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -21,7 +21,7 @@ class _DatePickerState extends State<DatePicker> {
             widget.label,
           ),
           TextField(
-            controller: _date,
+            controller: widget.controller,
             onTap: () async {
               var pickedDate = await showDatePicker(
                   context: context,
@@ -30,7 +30,11 @@ class _DatePickerState extends State<DatePicker> {
                   lastDate: DateTime(2100));
               if (pickedDate != null) {
                 setState(() {
-                _date.text = DateFormat('dd.MM.yyyy').format(pickedDate);
+                  // if(pickedDate!.compareTo(DateTime.now()) > 0){
+                  //   pickedDate = null;
+                  //   _wrongData = true;
+                  // }
+                widget.controller.text = DateFormat('dd.MM.yyyy').format(pickedDate);
                 });
               }
             },

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/features/account/view/account_View.dart';
+import 'package:flutter_application_2/features/account/view/account_view.dart';
 import 'package:flutter_application_2/features/authorization/view/authorization_screen.dart';
 import 'package:flutter_application_2/features/card_addition/card_add_view.dart';
 import 'package:flutter_application_2/features/card/card_view.dart';
+import 'package:flutter_application_2/features/cards_list/bloc/cards_list_bloc.dart';
 import 'package:flutter_application_2/features/cards_list/view/cards_list.dart';
 import 'package:flutter_application_2/features/defs.dart';
 import 'package:flutter_application_2/features/request/requests_view.dart';
@@ -40,16 +41,13 @@ class MCSApp extends StatelessWidget {
                 fontSize: 14)),
       ),
       routes: {
-        // '/' : (context){
-        //   return SplashScreen();
-        // },
         '/': (context) {
           return isAuthorizationEnabled
               ? AuthorizationScreen()
               : CardsList();
         },
         '/card_screen': (context) => const CardScreen(),
-        '/add_card': (context) => CardAddScreen(),
+         '/add_card': (context) => CardAddScreen(cardsListBloc: ModalRoute.of(context)?.settings.arguments as CardsListBloc,),
         '/account' : (context) => AccountView(),
         '/requests' : (context)=> const RequestsView(),
       },

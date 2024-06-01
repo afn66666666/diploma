@@ -53,8 +53,11 @@ class _CardsListState extends State<CardsList> {
                   bottom: isFloatingButtonShow ? 20 : -80,
                   right: 20,
                   child: FloatingActionButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/add_card');
+                      onPressed: () async {
+                        String refresh = await Navigator.of(context).pushNamed('/add_card',arguments: _cardsListBloc) as String;
+                        if(refresh == 'refresh'){
+                          _cardsListBloc.add(RefreshCardsList());
+                        }
                       },
                       child: const Icon(Icons.add))),
             ]),
@@ -115,6 +118,28 @@ class _CardsListState extends State<CardsList> {
                 child: BlocBuilder<CardsListBloc, CardsListState>(
               bloc: _cardsListBloc,
               builder: (context, state) {
+                if(state is CardsListRefreshed){
+                  return ListView.separated(
+                      itemCount: state.cards.length + 1,
+                      separatorBuilder: (context, index) => const Divider(),
+                      itemBuilder: (context, index) {
+                        if (index < state.cards.length) {
+                          return GestureDetector(
+                              child: CardTile(
+                                  isEditMode: isEditMode,
+                                  card: state.cards[index],
+                                  ));
+                        } else {
+                          _cardsListBloc.add(LoadCardsList());
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 32),
+                            child: Center(
+                              child: const CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                      });
+                }
                 if (state is CardsListLoaded) {
                   return ListView.separated(
                       itemCount: state.cards.length + 1,

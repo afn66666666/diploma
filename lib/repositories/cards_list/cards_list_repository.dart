@@ -29,8 +29,6 @@ class CardsListRepository {
           loadedCards.add(archCard);
           ++i;
         }
-
-        int a = 1;
         return loadedCards;
       } else {
         return [];

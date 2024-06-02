@@ -25,9 +25,17 @@ class SideMenu extends StatelessWidget {
                     },
                   ),
                   ListTile(
+                    leading: const Icon(Icons.map_outlined),
+                    title: const Text('Карта раскопок'),
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/excavations_map');
+                    },
+                  ),
+                  ListTile(
                     leading: const Icon(Icons.topic),
                     title: const Text('Заявки на изменения'),
                     onTap: () {
+                      
                       Navigator.of(context).pushNamed('/requests');
                     },
                   ),

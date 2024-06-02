@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/features/card/widgets/card_forms_edit.dart';
 import 'package:flutter_application_2/features/card/widgets/card_forms_read.dart';
-import 'package:flutter_application_2/excavation_map/map_screen.dart';
+import 'package:flutter_application_2/features/excavation_map/map_screen.dart';
 import 'package:flutter_application_2/repositories/cards_list/models/card.dart';
 import 'package:flutter_application_2/features/defs.dart';
 import 'package:flutter_application_2/features/sql_connection/connector.dart';

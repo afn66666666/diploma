@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/excavation_map/map_screen.dart';
+import 'package:flutter_application_2/features/excavation_map/map_point.dart';
+import 'package:flutter_application_2/features/excavation_map/map_screen.dart';
 import 'package:flutter_application_2/features/defs.dart';
 import 'package:flutter_application_2/repositories/cards_list/models/card.dart';
+import 'package:flutter_application_2/repositories/excavations/models/excavation.dart';
 import 'package:flutter_application_2/repositories/user/user_repository.dart';
 import 'package:intl/intl.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -13,9 +15,7 @@ import 'package:yandex_mapkit/yandex_mapkit.dart';
 class CardFormsRead extends StatelessWidget {
   final ArchCard _card;
   final mapControllerCompleter = Completer<YandexMapController>();
-  CardFormsRead(this._card, {super.key}) {
-    
-  }
+  CardFormsRead(this._card, {super.key}) {}
 
   @override
   Widget build(BuildContext context) {
@@ -61,13 +61,17 @@ class CardFormsRead extends StatelessWidget {
               ),
             ),
             onPressed: () {
-				var json = jsonDecode(_card.geodata) as List<dynamic>;
-				var ss = json[0] as Map<String,dynamic>;
-				
-              Navigator.of(context).pushReplacement<void, void>(
-                  MaterialPageRoute(builder: (context) {
-                return MapScreen(rawGeoData: ss);
-              }));
+              var json = (jsonDecode(_card.geodata) as List<dynamic>)[0];
+              final name = json['result'];
+              final latitude = double.parse(json['geo_lat']);
+              final longtitude = double.parse(json['geo_lon']);
+              Navigator.of(context).pushNamed('/object_excavation_map',arguments: MapPoint(name: name, latitude: latitude, longtitude: longtitude));
+              // Navigator.of(context).pushReplacement<void, void>(
+              //     MaterialPageRoute(builder: (context) {
+              //   return MapScreen.single(point: MapPoint(name: name,latitude: latitude,longitude: longtitude),);
+              // }
+              // )
+              // );
             },
             child: const Text(
               'Открыть карту',

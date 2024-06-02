@@ -13,16 +13,16 @@ class ArchCard {
   String author;
   int infoYear;
   String infoSource;
-  String receiveType; //TODO: will be enum
+  String receiveType; 
   String infoActNumber;
   DateTime excavationDate;
   String description;
   int count;
-  String material; //TODO: will be enum
+  String material;
   String size;
   String preservation;
   int registrationNumber;
-  String storagePlaceId; //TODO: will be enum i guess...
+  String storagePlaceId; 
   String inventoryNumber;
   String note;
   Uint8List media;
@@ -108,48 +108,4 @@ ArchCard.fromJson(Map<String, dynamic> json):
         return;
     }
   }
-
-
-  //FOR FUTURE CARDS
-
-  // int id;
-  // String date;
-  // String? author;
-  // int? infoYear;
-  // int? infoSource;
-  // String? receiveType; //TODO: will be enum
-  // int? infActNumber;
-  // String? excavationDate;
-  // String? description;
-  // int? count;
-  // String? material; //TODO: will be enum
-  // String? size;
-  // String? preservation;
-  // int? registrationNumber;
-  // String? storagePlace; //TODO: will be enum i guess...
-  // int? inventoryNumber;
-  // String? note;
-  // List<Uint8>? media;
-  // String? geodataLol;
-
-  // Card(
-  //     this.id,
-  //     this.date,
-  //     this.author,
-  //     this.infoYear,
-  //     this.infoSource,
-  //     this.receiveType,
-  //     this.infActNumber,
-  //     this.excavationDate,
-  //     this.description,
-  //     this.count,
-  //     this.material,
-  //     this.size,
-  //     this.preservation,
-  //     this.registrationNumber,
-  //     this.storagePlace,
-  //     this.inventoryNumber,
-  //     this.note,
-  //     this.media,
-  //     this.geodataLol);
 }

@@ -6,10 +6,11 @@ import 'package:flutter_application_2/features/card/card_view.dart';
 import 'package:flutter_application_2/features/cards_list/bloc/cards_list_bloc.dart';
 import 'package:flutter_application_2/features/cards_list/view/cards_list.dart';
 import 'package:flutter_application_2/features/defs.dart';
+import 'package:flutter_application_2/features/excavation_map/map_point.dart';
+import 'package:flutter_application_2/features/excavation_map/views/excavations_map_view.dart';
+import 'package:flutter_application_2/features/excavation_map/views/object_excavation_view.dart';
 import 'package:flutter_application_2/features/request/requests_view.dart';
 import 'package:flutter_application_2/features/splash_screen/splash_screen.dart';
-import 'package:flutter_application_2/features/sql_connection/connector.dart';
-import 'package:provider/provider.dart';
 
 class MCSApp extends StatelessWidget {
   const MCSApp({super.key});
@@ -46,6 +47,8 @@ class MCSApp extends StatelessWidget {
               ? AuthorizationScreen()
               : CardsList();
         },
+        '/object_excavation_map' : (context)=>ObjectExcavationView(point: ModalRoute.of(context)?.settings.arguments as MapPoint),
+        '/excavations_map' : (context)=> ExcavationsMapView(),
         '/card_screen': (context) => const CardScreen(),
          '/add_card': (context) => CardAddScreen(cardsListBloc: ModalRoute.of(context)?.settings.arguments as CardsListBloc,),
         '/account' : (context) => AccountView(),

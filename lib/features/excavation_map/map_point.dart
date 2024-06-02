@@ -6,7 +6,7 @@ class MapPoint extends Equatable {
  const MapPoint({
    required this.name,
    required this.latitude,
-   required this.longitude,
+   required this.longtitude,
  });
 
 
@@ -19,9 +19,9 @@ class MapPoint extends Equatable {
 
 
  /// Долгота
- final double longitude;
+ final double longtitude;
 
 
  @override
- List<Object?> get props => [name, latitude, longitude];
+ List<Object?> get props => [name, latitude, longtitude];
 }

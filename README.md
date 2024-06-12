@@ -1,16 +1,23 @@
-# flutter_application_2
+# Archeology Card Storage (ACS)
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ACS - мобильное кроссплатформенное приложение, созданное для работы с цифровыми версиями паспортов музейных объектов Археологического Музея Воронежского Государственного Университета.
+***
+Приложение разработано при помощи языка программирования Dart и фреймворка Flutter. Для архитектурного разделения бизнес-логики и отображения виджетов использовалась библиотека BLoC. Полный список зависимостей от сторонних библиотек приведен ниже: 
++ [get_it: ^7.7.0](https://pub.dev/packages/get_it)
++ [postgres: ^3.1.2](https://pub.dev/packages/postgres)
++ [passwordfield: ^0.2.0](https://pub.dev/packages/passwordfield)
++  [image_picker: ^1.0.8](https://pub.dev/packages/image_picker)
++  [get: ^4.6.6](https://pub.dev/packages/get)
++  [http: ^1.2.0](https://pub.dev/packages/http)
++  [flutter_bloc: ^8.1.5](https://pub.dev/packages/flutter_bloc)
++  [intl: ^0.19.0](https://pub.dev/packages/intl)
++  [geolocator: ^11.1.0](https://pub.dev/packages/geolocator)
++  [yandex_mapkit: ^4.0.2](https://pub.dev/packages/yandex_mapkit)
++  [equatable: ^2.0.5](https://pub.dev/packages/equatable)
++  [uuid: ^4.4.0](https://pub.dev/packages/uuid)
+___
+### Пререквизиты
++ Visual Studio Code
++ Android Studio (эмулятор)
++ Dart SDK version: 3.2.6
++ Flutter 3.16.9

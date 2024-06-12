@@ -20,7 +20,7 @@ class CardsList extends StatefulWidget {
 
 class _CardsListState extends State<CardsList> {
   final _cardsListBloc = CardsListBloc(GetIt.I<CardsListRepository>());
-  var _searchParams = HashMap<String, String>();
+  var searchParams = <String, dynamic>{};
   final Set<int> selectedCards = {};
   bool isFloatingButtonShow = false;
   bool isEditMode = false;
@@ -54,8 +54,10 @@ class _CardsListState extends State<CardsList> {
                   right: 20,
                   child: FloatingActionButton(
                       onPressed: () async {
-                        String refresh = await Navigator.of(context).pushNamed('/add_card',arguments: _cardsListBloc) as String;
-                        if(refresh == 'refresh'){
+                        String refresh = await Navigator.of(context).pushNamed(
+                            '/add_card',
+                            arguments: _cardsListBloc) as String;
+                        if (refresh == 'refresh') {
                           _cardsListBloc.add(RefreshCardsList());
                         }
                       },
@@ -105,11 +107,11 @@ class _CardsListState extends State<CardsList> {
                                         setParameter: _setSearchParam,
                                         removeParameter: _removeSearchParam)));
                           },
-                          icon: _searchParams.isEmpty
+                          icon: searchParams.isEmpty
                               ? const Icon(Icons.search_rounded)
                               : Row(children: [
                                   const Icon(Icons.search_rounded),
-                                  Text('(${_searchParams.length})',
+                                  Text('(${searchParams.length})',
                                       style: theme.appBarTheme.titleTextStyle)
                                 ])),
                     ],
@@ -118,17 +120,19 @@ class _CardsListState extends State<CardsList> {
                 child: BlocBuilder<CardsListBloc, CardsListState>(
               bloc: _cardsListBloc,
               builder: (context, state) {
-                if(state is CardsListRefreshed){
+                if (state is CardsListRefreshed) {
                   return ListView.separated(
                       itemCount: state.cards.length + 1,
                       separatorBuilder: (context, index) => const Divider(),
                       itemBuilder: (context, index) {
                         if (index < state.cards.length) {
                           return GestureDetector(
-                              child: CardTile(
-                                  isEditMode: isEditMode,
-                                  card: state.cards[index],
-                                  ));
+                            child: CardTile(
+                              isEditMode: isEditMode,
+                              card: state.cards[index],
+                              setEditMode: setEditModeCallback,
+                            ),
+                          );
                         } else {
                           _cardsListBloc.add(LoadCardsList());
                           return const Padding(
@@ -148,9 +152,10 @@ class _CardsListState extends State<CardsList> {
                         if (index < state.cards.length) {
                           return GestureDetector(
                               child: CardTile(
-                                  isEditMode: isEditMode,
-                                  card: state.cards[index],
-                                  ));
+                            isEditMode: isEditMode,
+                            card: state.cards[index],
+                            setEditMode: setEditModeCallback,
+                          ));
                         } else {
                           _cardsListBloc.add(LoadCardsList());
                           return const Padding(
@@ -169,9 +174,10 @@ class _CardsListState extends State<CardsList> {
                         if (index < state.cards.length) {
                           return GestureDetector(
                               child: CardTile(
-                                  isEditMode: isEditMode,
-                                  card: state.cards[index],
-                                  ));
+                            isEditMode: isEditMode,
+                            card: state.cards[index],
+                            setEditMode: setEditModeCallback,
+                          ), );
                         }
                       });
                 } else if (state is CardsListLoadingFailed) {
@@ -185,6 +191,7 @@ class _CardsListState extends State<CardsList> {
               },
             ))));
   }
+
 
   void changeSelection(int id, bool value) {
     if (!isEditMode) {
@@ -204,15 +211,26 @@ class _CardsListState extends State<CardsList> {
 
   void _setSearchParam(String name, String value) {
     setState(() {
-      _searchParams[name] = value;
+      searchParams[name] = value;
     });
+  }
+
+  void startSearch(){
+    _cardsListBloc.add(FiltrateCards(searchParams));
   }
 
   void _removeSearchParam(String name) {
     setState(() {
-      _searchParams.remove(name);
+      searchParams.remove(name);
     });
   }
+
+  void setEditModeCallback(){
+    setState(() {
+      isEditMode = true;
+    });
+  }
+
 
   List<ArchCard> filtrate(List<ArchCard> archCards) {
     List<ArchCard> validatedCards = [];

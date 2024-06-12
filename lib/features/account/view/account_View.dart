@@ -47,6 +47,7 @@ class _AccountViewState extends State<AccountView> {
                           children: [
                             row('Имя', _user.name),
                             row('Фамилия', _user.surname),
+                            row('Статус', 'Администратор'),
                             const Text('Организация'),
                             TextButton(
                                 onPressed: () {},

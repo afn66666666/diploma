@@ -48,9 +48,23 @@ class CardsListBloc extends Bloc<CardsListEvent, CardsListState> {
         emit(CardsListRefreshed(cards: cards));
       },
     );
+
+    on<FiltrateCards>((event, emit) {
+      List<ArchCard> filtrated = [];
+      for(int i = 0; i < cards.length;++i){
+        if(filtrate(cards[i], event.params)){
+          filtrated.add(cards[i]);
+        }
+      }
+    },);
   }
 
-  bool isCardValid(ArchCard card) {
-    return false;
+
+
+  bool filtrate(ArchCard card, Map<String,dynamic> parameters){
+    if(card.name != parameters['name']){
+      return false;
+    }
+    return true;
   }
 }

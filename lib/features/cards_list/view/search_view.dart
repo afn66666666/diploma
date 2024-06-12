@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/features/card_addition/date_picker.dart';
 
 class SearchView extends StatelessWidget {
   final nameController = TextEditingController();
   final placementController = TextEditingController();
+  final createdDateController = TextEditingController();
   final Function setParameter;
   final Function removeParameter;
   SearchView(
@@ -16,50 +18,36 @@ class SearchView extends StatelessWidget {
         border: const OutlineInputBorder(),
         labelStyle: TextStyle(color: theme.appBarTheme.backgroundColor));
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: const Text("Фильтры"),),
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+        child: ListView(
+          
           children: [
-            const Align(
-                widthFactor: 8,
-                alignment: Alignment.topLeft,
-                child: Text(
-                  'Наименование объекта',
-                  textAlign: TextAlign.start,
-                )),
-            TextFormField(
-                controller: nameController, decoration: textFieldDecoration),
-            const Align(
-                widthFactor: 8,
-                alignment: Alignment.topLeft,
-                child: Text(
-                  'Расположение',
-                  textAlign: TextAlign.start,
-                )),
-            TextFormField(
-                controller: placementController,
-                decoration: textFieldDecoration),
+            getTextField('Наименование объекта', theme,nameController),
+            getTextField('Автор', theme, null),
+            getTextField('Место хранения',theme,placementController),
+            getTextField('Описание', theme,null),
+            getTextField('Номер регистрации', theme,null),
+            DatePicker(label: 'Дата создания (от)', controller: createdDateController,),
+            DatePicker(label: 'Дата создания (до)', controller: createdDateController,),
             ElevatedButton(
               onPressed: () {
                 removeParameter('name');
                 Navigator.of(context).pop();
-                // Действие при нажатии на кнопку
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.purple.shade400,
-                // Цвет фона кнопки
                 shape: RoundedRectangleBorder(
                   borderRadius:
-                      BorderRadius.circular(4.0), // Радиус закругления углов
+                      BorderRadius.circular(4.0),
                 ),
               ),
               child: const Text(
-                'Сбросить фильтры', // Текст на кнопке
+                'Сбросить фильтры',
                 style: TextStyle(
-                  color: Colors.white, // Цвет текста
-                  fontSize: 16.0, // Размер шрифта
+                  color: Colors.white,
+                  fontSize: 16.0,
                 ),
               ),
             ),
@@ -72,21 +60,19 @@ class SearchView extends StatelessWidget {
                   setParameter('placement', placementController.text);
                 }
                 Navigator.of(context).pop();
-                // Действие при нажатии на кнопку
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.purple,
-                // Цвет фона кнопки
                 shape: RoundedRectangleBorder(
                   borderRadius:
                       BorderRadius.circular(4.0), // Радиус закругления углов
                 ),
               ),
               child: const Text(
-                'Поиск', // Текст на кнопке
+                'Поиск',
                 style: TextStyle(
-                  color: Colors.white, // Цвет текста
-                  fontSize: 16.0, // Размер шрифта
+                  color: Colors.white,
+                  fontSize: 16.0,
                 ),
               ),
             )
@@ -94,5 +80,24 @@ class SearchView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget getTextField(String label,ThemeData theme, TextEditingController? controller) {
+    final textFieldDecoration = InputDecoration(
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+        border: const OutlineInputBorder(),
+        labelStyle: TextStyle(color: theme.appBarTheme.backgroundColor));
+    return Column(children: [
+      Align(
+          widthFactor: 8,
+          alignment: Alignment.topLeft,
+          child: Text(
+            label,
+            textAlign: TextAlign.start,
+          )),
+      TextFormField(
+          controller: controller, decoration: textFieldDecoration),
+    ]);
   }
 }

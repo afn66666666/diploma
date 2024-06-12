@@ -13,3 +13,8 @@ class AddCard extends CardsListEvent{
   final ArchCard card;
   AddCard(this.card);
 }
+
+class FiltrateCards extends CardsListEvent{
+  final Map<String,dynamic> params;
+  FiltrateCards(this.params);
+}

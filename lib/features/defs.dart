@@ -45,7 +45,7 @@ const List<String> labels = [
   'Место нахождения (раскопок)',
 ];
 
-const bool isAuthorizationEnabled = false;
+const bool isAuthorizationEnabled = true;
 const bool isDatabaseTouched = false;
 
 const String cardTableName = 'card_legacy';

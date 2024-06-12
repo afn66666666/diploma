@@ -63,10 +63,10 @@ class _CardScreenState extends State<CardScreen> {
           }
         },
         child: Scaffold(
-          appBar: AppBar(
+            appBar: AppBar(
               title: isEditingMode
-                  ? Text('${_archCard.name} : Редактирование ')
-                  : Text('${_archCard.name} : Сводка'),
+                  ? Text('${_archCard.name} Редактирование ')
+                  : Text('${_archCard.name} Сводка'),
               actions: isEditingMode
                   ? [
                       //CLOSE BUTTON
@@ -133,28 +133,25 @@ class _CardScreenState extends State<CardScreen> {
                         icon: const Icon(Icons.check_sharp),
                       )
                     ]
-                  : null),
-          // edit button
-          floatingActionButton: Stack(children: [
-            AnimatedPositioned(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                bottom: editFABPosition.toDouble(),
-                right: 20,
-                child: FloatingActionButton(
-                    onPressed: () {
-                      setState(() {
-                        editFABPosition = -80;
-                        isEditingMode = !isEditingMode;
-                        setEditButtonVisibility(false);
-                      });
-                    },
-                    child: const Icon(Icons.edit))),
-          ]),
-          body: isEditingMode
-              ? formsEdit
-              : formsRead
-          
-        ));
+                  : null,
+            ),
+            // edit button
+            floatingActionButton: Stack(children: [
+              AnimatedPositioned(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  bottom: editFABPosition.toDouble(),
+                  right: 20,
+                  child: FloatingActionButton(
+                      onPressed: () {
+                        setState(() {
+                          editFABPosition = -80;
+                          isEditingMode = !isEditingMode;
+                          setEditButtonVisibility(false);
+                        });
+                      },
+                      child: const Icon(Icons.edit))),
+            ]),
+            body: isEditingMode ? formsEdit : formsRead));
   }
 }
